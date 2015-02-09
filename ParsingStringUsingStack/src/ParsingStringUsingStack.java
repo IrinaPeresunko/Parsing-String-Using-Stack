@@ -10,6 +10,39 @@ import java.util.Stack;
  */
 public class ParsingStringUsingStack
 {
+static boolean checkEnteredExpression(char[] expression){
+	
+	int countOfOpenBracket=0;
+    int countOfCloseBracket=0;
+    for(int i=0;i<expression.length;i++){
+    	if(expression[i]=='(') countOfOpenBracket++;
+    	if(expression[i]==')') countOfCloseBracket++;
+    	}
+    
+    Stack digit=new Stack();
+    Stack operation=new Stack();
+    for(int i=0;i<expression.length;i++){
+    	if(expression[i]!='(' && expression[i]!=')'){
+    		if(Character.isDigit(expression[i])==true){
+    		  pushDigit(digit,Double.parseDouble(Character.toString(expression[i])));
+    		  }
+    		else pushOperation(operation,Character.toString(expression[i])); 	
+    	}
+    	else continue;
+    }
+    int sizeStackOfOperation=operation.size();
+    boolean flagCorrectOperation=false;
+ 	 while(operation.size()!=0){
+ 		 String sOperation=(String) operation.pop();
+ 		 char op=sOperation.charAt(0);
+ 		 if(op=='+' || op=='-' || op=='*' || op=='/' || op=='(' || op==')') flagCorrectOperation=true;
+ 	 } 	 
+ 	 
+    boolean flag=false;
+  	 if(countOfOpenBracket==countOfCloseBracket && digit.size()-sizeStackOfOperation==1 &&
+  			 flagCorrectOperation==true) flag=true;
+    return flag; 
+}
  static void pushDigit(Stack stackOfDigit, double a)
  { 
   stackOfDigit.push(new Double(a));
@@ -48,23 +81,23 @@ public class ParsingStringUsingStack
 
 	 if(operation=='+'){
 		 double result=a+b;
-		 Double iResult = new Double(result);
-		 stackOfDigit.push(iResult);
+		 Double dResult = new Double(result);
+		 stackOfDigit.push(dResult);
 	 }
 	 if(operation=='-'){
 		 double result=a-b;
-		 Double iResult = new Double(result);
-		 stackOfDigit.push(iResult);
+		 Double dResult = new Double(result);
+		 stackOfDigit.push(dResult);
 	 }
 	 if(operation=='*'){
 		 double result=a*b;
-		 Double iResult = new Double(result);
-		 stackOfDigit.push(iResult);
+		 Double dResult = new Double(result);
+		 stackOfDigit.push(dResult);
 	 }
 	 if(operation=='/'){
 		 double result=a/b;
-		 Double iResult = new Double(result);
-		 stackOfDigit.push(iResult);		 
+		 Double dResult = new Double(result);
+		 stackOfDigit.push(dResult);		 
 	 }
  }
  public static void main(String args[])
@@ -82,13 +115,17 @@ public class ParsingStringUsingStack
 	      char[] expression=new char[userInput.length()];
 	      for(int i=0;i<userInput.length();i++){
 	    	  expression[i]=userInput.charAt(i);
-	      }	      
+	      }	 
+	      
+	    boolean flag=checkEnteredExpression(expression);
 	    
+	    if(flag==true){ 
 	      Stack stackOfOperation = new Stack();
 	      Stack stackOfDigit = new Stack();
 	      
 	      for(int i=0;i<expression.length;i++){
-	    	  if(Character.isDigit(expression[i])==true) pushDigit(stackOfDigit,Double.parseDouble(Character.toString(expression[i])));
+	    	  if(Character.isDigit(expression[i])==true)
+	    		  pushDigit(stackOfDigit,Double.parseDouble(Character.toString(expression[i])));
 	    	  else{
 	    		  if(expression[i]==')'){
 	    			  while(((String)stackOfOperation.peek()).charAt(0)!='('){	    				 
@@ -105,6 +142,7 @@ public class ParsingStringUsingStack
 	    			  }
 	    		  }
 	    	  }
+	    
 	      System.out.println("stackOfDigit: " + stackOfDigit);
 	      System.out.println("stackOfSign: " + stackOfOperation);
 	      int countOfOperations=stackOfOperation.size();
@@ -119,4 +157,6 @@ public class ParsingStringUsingStack
 	     Double result=(Double) stackOfDigit.pop();
 	      System.out.println("result="+result);
 	      }
+	    else System.out.println("Error, please enter the correct expression");
+ }
  }
